@@ -11,8 +11,8 @@
   function onChange() {
     goto(
       resolve("/[team1]/[team2]", {
-        team1: team1.toLowerCase(),
-        team2: team2.toLowerCase(),
+        team1: encodeURIComponent(team1.toLowerCase()),
+        team2: encodeURIComponent(team2.toLowerCase()),
       }),
     );
   }
