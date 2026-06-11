@@ -145,14 +145,20 @@ export async function predictMatch(team1: string, team2: string) {
   const t2Conceded =
     (h2hGoals[0] * weightH2h + recentGoals2[1] * weightRecentT2 + similarGoals2[1] * weightSimilarT2) / weightSumT2;
 
-  const t1Projected =
-    t1Scored * t1Prob +
-    t2Conceded * t2Prob +
-    (Math.abs(t1Scored - t2Conceded) / ((t1Scored + t2Conceded) / 2.0)) * t1Prob * t2Prob * (t1Scored - t2Conceded);
-  const t2Projected =
-    t2Scored * t2Prob +
-    t1Conceded * t1Prob +
-    (Math.abs(t2Scored - t1Conceded) / ((t2Scored + t1Conceded) / 2.0)) * t1Prob * t2Prob * (t2Scored - t1Conceded);
+  const t1Projected = isNaN(t1Scored)
+    ? t2Conceded
+    : isNaN(t2Conceded)
+      ? t1Scored
+      : t1Scored * t1Prob +
+        t2Conceded * t2Prob +
+        (Math.abs(t1Scored - t2Conceded) / ((t1Scored + t2Conceded) / 2.0)) * t1Prob * t2Prob * (t1Scored - t2Conceded);
+  const t2Projected = isNaN(t2Scored)
+    ? t1Conceded
+    : isNaN(t1Conceded)
+      ? t2Scored
+      : t2Scored * t2Prob +
+        t1Conceded * t1Prob +
+        (Math.abs(t2Scored - t1Conceded) / ((t2Scored + t1Conceded) / 2.0)) * t1Prob * t2Prob * (t2Scored - t1Conceded);
 
   return {
     team1,

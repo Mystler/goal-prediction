@@ -47,6 +47,7 @@ console.log(
 console.log();
 
 console.log("COMBINED RESULTS");
+console.log(`ELO: ${data.team1EloProb.toFixed(2)} - ${data.team2EloProb.toFixed(2)}`);
 console.log(`${data.team1}: ${data.team1Scored.toFixed(2)} - ${data.team1Conceded.toFixed(2)}`);
 console.log(`${data.team2}: ${data.team2Scored.toFixed(2)} - ${data.team2Conceded.toFixed(2)}`);
 console.log();
