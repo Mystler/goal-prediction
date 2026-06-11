@@ -1,0 +1,8 @@
+{
+  "short_name": "Goal Projection",
+  "name": "Mystler's Goal Projection Tool",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#0f172b",
+  "background_color": "#0f172b"
+}

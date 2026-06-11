@@ -1,1 +1,107 @@
 @import "tailwindcss";
+
+@font-face {
+  font-family: "Noto Sans";
+  font-style: normal;
+  src: url("/NotoSans-VariableFont_wdth,wght.ttf");
+}
+
+@font-face {
+  font-family: "Noto Sans";
+  font-style: italic;
+  src: url("/NotoSans-Italic-VariableFont_wdth,wght.ttf");
+}
+
+/* Tailwind setup */
+@theme {
+  --font-*: initial;
+  --font-sans: "Noto Sans", sans-serif;
+}
+
+:root {
+  scrollbar-color: var(--color-slate-500) var(--color-slate-900);
+}
+
+@layer base {
+  body {
+    @apply m-0 bg-slate-900 text-slate-50;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply mt-4 mb-2 font-semibold first:mt-0;
+  }
+  h1 {
+    @apply text-4xl text-amber-400;
+  }
+  h2 {
+    @apply text-3xl;
+  }
+  h3 {
+    @apply text-2xl;
+  }
+  h4 {
+    @apply text-xl;
+  }
+
+  p {
+    @apply mb-2;
+  }
+
+  a,
+  a:visited,
+  .link {
+    @apply text-amber-400;
+
+    &:hover,
+    &:focus,
+    &:active {
+      @apply text-amber-300;
+    }
+  }
+
+  input[type="button"],
+  input[type="submit"],
+  input[type="text"],
+  input[type="number"],
+  select {
+    @apply m-1 rounded-lg border-2 border-amber-400 bg-slate-800 px-4 py-2;
+    @apply outline-none hover:border-amber-300 hover:bg-slate-700 focus:border-amber-300 focus:bg-slate-700;
+  }
+
+  .flex {
+    input[type="button"],
+    input[type="submit"],
+    input[type="text"],
+    input[type="number"],
+    select {
+      @apply mx-0;
+    }
+  }
+
+  input[type="color"] {
+    @apply size-10 cursor-pointer;
+  }
+
+  input[type="button"],
+  input[type="submit"],
+  button {
+    @apply cursor-pointer;
+  }
+
+  input[type="range"],
+  input[type="checkbox"],
+  input[type="radio"] {
+    @apply accent-amber-400;
+  }
+
+  hr {
+    @apply my-4 text-amber-300;
+  }
+}
+
+.link-btn {
+  @apply text-xs text-amber-400 underline hover:text-amber-300;
+}

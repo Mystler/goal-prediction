@@ -9,6 +9,7 @@
   let team2 = $state("");
 
   function onChange() {
+    if (!team1 || !team2) return;
     goto(
       resolve("/[team1]/[team2]", {
         team1: encodeURIComponent(team1.toLowerCase()),
@@ -18,20 +19,34 @@
   }
 </script>
 
-<h1>Goal Projection</h1>
+<h1 class="text-center mt-2">Goal Projection</h1>
 
-<div>
-  <label>
-    Team 1:<br />
-    <input type="text" list="nations" bind:value={team1} onchange={onChange} />
-  </label>
+<p class="text-center"><a class="link-btn" href={resolve("/ratings")}>Show ELO Ratings</a></p>
+
+<div class="flex flex-wrap gap-4 text-center justify-center">
+  <div>
+    <label>
+      Team 1:<br />
+      <input type="text" list="nations" bind:value={team1} onchange={onChange} />
+    </label>
+  </div>
+  <div>
+    <label>
+      Team 2:<br />
+      <input type="text" list="nations" bind:value={team2} onchange={onChange} />
+    </label>
+  </div>
 </div>
-<div>
-  <label>
-    Team 2:<br />
-    <input type="text" list="nations" bind:value={team2} onchange={onChange} />
-  </label>
-</div>
+
+<p class="text-center">
+  <button
+    class="link-btn"
+    onclick={() => {
+      team1 = "";
+      team2 = "";
+    }}>Clear</button
+  >
+</p>
 
 <datalist id="nations">
   {#each Object.keys(data.ratings).toSorted() as nation (nation)}
@@ -41,4 +56,6 @@
 
 <hr />
 
-{@render children()}
+<div class="max-w-(--breakpoint-xl) mx-auto text-center">
+  {@render children()}
+</div>
