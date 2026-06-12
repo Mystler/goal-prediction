@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { page } from "$app/state";
+
   let { data } = $props();
 
   let title = $derived(data.match ? `${data.match.team1} - ${data.match.team2}` : "Goal Projection");
@@ -15,6 +17,12 @@
     <div class="text-2xl text-amber-400 font-bold sm:text-right">{data.match.team1}</div>
     <div class="text-xl">vs</div>
     <div class="text-2xl text-amber-400 font-bold sm:text-left">{data.match.team2}</div>
+  </div>
+
+  <p>Ratings</p>
+  <div class="flex gap-6 justify-center">
+    <div>{page.data.ratings[data.match.team1]}</div>
+    <div>{page.data.ratings[data.match.team2]}</div>
   </div>
 
   {#snippet projectedGoals(a: number, b: number)}
