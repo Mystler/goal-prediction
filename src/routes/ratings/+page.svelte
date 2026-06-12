@@ -3,7 +3,7 @@
 
   let search = $state("");
 
-  let ratings = $derived(Object.entries(page.data.ratings as Record<string, number>).toSorted((a, b) => b[1] - a[1]));
+  let ratings = $derived(Object.entries(page.data.ratings).toSorted((a, b) => b[1] - a[1]));
   let filtered = $derived(ratings.filter((x) => x[0].toLowerCase().includes(search.toLowerCase())));
 </script>
 

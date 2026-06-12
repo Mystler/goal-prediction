@@ -19,6 +19,17 @@
   }
 </script>
 
+<p class="mt-2 text-center text-xs text-slate-500">
+  Last Data Update:<br />{data.dataUpdated?.toLocaleString("en-US", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: false,
+  })}
+</p>
+
 <h1 class="text-center mt-2">Goal Projection</h1>
 
 <p class="text-center"><a class="link-btn" href={resolve("/ratings")}>Show ELO Ratings</a></p>
