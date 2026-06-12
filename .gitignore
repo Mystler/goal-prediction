@@ -24,3 +24,4 @@ vite.config.ts.timestamp-*
 
 # Project
 ratings.json
+pm2.config.cjs
