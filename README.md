@@ -1,4 +1,4 @@
-# Mystler's Goal Prediction ----------
+# Mystler's Goal Prediction
 
 A "naive" approach to predicting Soccer matches between national teams.
 
