@@ -1,0 +1,47 @@
+name: Tests
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        name: Install pnpm
+        with:
+          version: latest
+          cache: true
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: "pnpm"
+      - run: pnpm i
+        name: Install Dependencies
+      - run: pnpm build
+        name: Build
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v6
+        name: Install pnpm
+        with:
+          version: latest
+          cache: true
+      - name: Use Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+          cache: "pnpm"
+      - run: pnpm i
+        name: Install Dependencies
+      - run: pnpm check
+        name: Run Checks
+      - run: pnpm lint
+        name: Run Prettier Check and ESLint
