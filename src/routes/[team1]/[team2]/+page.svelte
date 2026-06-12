@@ -51,7 +51,7 @@
         {#each games.toSorted((a, b) => b.date.getTime() - a.date.getTime()) as game (game.date + game.home_team + game.away_team)}
           {const isHome = !team || game.home_team === team}
           {const isAway = !team || game.away_team === team}
-          <div class="max-w-md mx-auto odd:bg-slate-800 p-1">
+          <div class="max-w-md mx-auto even:bg-slate-800 p-1">
             <div class="text-xs text-slate-500">{game.date.toISOString().slice(0, 10)}</div>
             <div class="grid grid-cols-[1fr_30px_30px_1fr]">
               <div
