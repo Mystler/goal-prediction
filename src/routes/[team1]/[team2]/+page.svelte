@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from "$app/state";
+  import PoissonTable from "$lib/PoissonTable.svelte";
 
   let { data } = $props();
 
@@ -44,6 +45,13 @@
     <div>{Math.round(data.match.team2EloProb * 100)}%</div>
   </div>
 
+  <PoissonTable
+    xg1={data.match.team1ProjectedGoals}
+    xg2={data.match.team2ProjectedGoals}
+    team1={data.match.team1}
+    team2={data.match.team2}
+  />
+
   {#snippet gamesSection(title: string, team: string | undefined, games: ProcessedGame[], avg: number[])}
     {#if games.length > 0}
       <div class="mb-4">
@@ -52,7 +60,7 @@
           {const isHome = !team || game.home_team === team}
           {const isAway = !team || game.away_team === team}
           <div class="max-w-md mx-auto even:bg-slate-800 p-1">
-            <div class="text-xs text-slate-500">{game.date.toISOString().slice(0, 10)}</div>
+            <div class="text-xs text-slate-500">{game.date.toISOString().slice(0, 10)}<br />{game.tournament}</div>
             <div class="grid grid-cols-[1fr_30px_30px_1fr]">
               <div
                 class={[
