@@ -38,13 +38,13 @@
   <div>
     <label>
       Team 1:<br />
-      <input type="text" list="nations" bind:value={team1} onchange={onChange} />
+      <input type="text" list="nations1" bind:value={team1} onchange={onChange} />
     </label>
   </div>
   <div>
     <label>
       Team 2:<br />
-      <input type="text" list="nations" bind:value={team2} onchange={onChange} />
+      <input type="text" list="nations2" bind:value={team2} onchange={onChange} />
     </label>
   </div>
 </div>
@@ -59,10 +59,23 @@
   >
 </p>
 
-<datalist id="nations">
-  {#each Object.keys(data.ratings).toSorted() as nation (nation)}
-    <option>{nation}</option>
-  {/each}
+<datalist id="nations1">
+  {#if team1.length > 0}
+    {#each Object.keys(data.ratings)
+      .filter((x) => x.toLowerCase().startsWith(team1.toLowerCase()))
+      .toSorted() as nation (nation)}
+      <option>{nation}</option>
+    {/each}
+  {/if}
+</datalist>
+<datalist id="nations2">
+  {#if team2.length > 0}
+    {#each Object.keys(data.ratings)
+      .filter((x) => x.toLowerCase().startsWith(team2.toLowerCase()))
+      .toSorted() as nation (nation)}
+      <option>{nation}</option>
+    {/each}
+  {/if}
 </datalist>
 
 <hr />
