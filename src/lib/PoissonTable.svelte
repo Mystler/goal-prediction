@@ -26,6 +26,10 @@
     localStorage.setItem("xpConfig", JSON.stringify(xpConfig));
   });
 
+  let minsLeft = $state(90);
+  let liveScore = $state([0, 0]);
+  let redCards = $state([0, 0]);
+
   function factorial(n: number) {
     let res = 1;
     for (let i = 1; i <= n; i++) {
@@ -49,18 +53,28 @@
     ];
     let t1Probs = Array(6).fill(0) as number[];
     for (let t1 = 0; t1 <= 5; t1++) {
-      if (t1 === 5) {
+      if (t1 < liveScore[0]) {
+        t1Probs[t1] = 0;
+      } else if (t1 === 5) {
         t1Probs[t1] = 1 - t1Probs[0] - t1Probs[1] - t1Probs[2] - t1Probs[3] - t1Probs[4];
       } else {
-        t1Probs[t1] = poisson(xg1, t1);
+        t1Probs[t1] = poisson(
+          (Math.max(0, xg1 - redCards[0] * 0.55 + redCards[1] * 0.55) / 90) * minsLeft,
+          t1 - liveScore[0],
+        );
       }
     }
     let t2Probs = Array(6).fill(0) as number[];
     for (let t2 = 0; t2 <= 5; t2++) {
-      if (t2 === 5) {
+      if (t2 < liveScore[1]) {
+        t2Probs[t2] = 0;
+      } else if (t2 === 5) {
         t2Probs[t2] = 1 - t2Probs[0] - t2Probs[1] - t2Probs[2] - t2Probs[3] - t2Probs[4];
       } else {
-        t2Probs[t2] = poisson(xg2, t2);
+        t2Probs[t2] = poisson(
+          (Math.max(0, xg2 - redCards[1] * 0.55 + redCards[0] * 0.55) / 90) * minsLeft,
+          t2 - liveScore[1],
+        );
       }
     }
     for (let t1 = 0; t1 <= 5; t1++) {
@@ -148,7 +162,7 @@
   });
 </script>
 
-<div class="mb-4 overflow-x-auto">
+<div class="mb-2 overflow-x-auto">
   <div class="grid grid-cols-8 min-w-xs max-w-(--breakpoint-lg) mx-auto text-[8px] sm:text-xs md:text-base">
     <button
       class={[tableMode === "chances" ? "bg-slate-700" : "bg-slate-800", "hover:bg-slate-600"]}
@@ -232,5 +246,25 @@
         {/if}
       {/each}
     {/each}
+  </div>
+</div>
+<div class="flex gap-4 mx-auto max-w-(--breakpoint-lg) text-[8px] mb-4">
+  <div class="flex flex-col items-start">
+    <div>Minutes Left:</div>
+    <div><input class="p-1 w-10 border-0 rounded-none" type="number" min="0" bind:value={minsLeft} /></div>
+  </div>
+  <div class="flex flex-col items-start">
+    <div>Live Score:</div>
+    <div>
+      <input class="p-1 w-10 border-0 rounded-none" type="number" min="0" bind:value={liveScore[0]} />
+      <input class="p-1 w-10 border-0 rounded-none" type="number" min="0" bind:value={liveScore[1]} />
+    </div>
+  </div>
+  <div class="flex flex-col items-start">
+    <div>Red Cards:</div>
+    <div>
+      <input class="p-1 w-10 border-0 rounded-none" type="number" min="0" bind:value={redCards[0]} />
+      <input class="p-1 w-10 border-0 rounded-none" type="number" min="0" bind:value={redCards[1]} />
+    </div>
   </div>
 </div>
