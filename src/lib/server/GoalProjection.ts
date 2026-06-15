@@ -153,7 +153,6 @@ export async function predictMatch(team1: string, team2: string) {
   const weightSimilarT2 = weightSimilar * similarGoals2[2];
   const weightSumT1 = weightH2h + weightRecentT1 + weightSimilarT1;
   const weightSumT2 = weightH2h + weightRecentT2 + weightSimilarT2;
-  console.log(weightSumT1);
 
   const t1Scored =
     (h2hGoals[0] * weightH2h + recentGoals1[0] * weightRecentT1 + similarGoals1[0] * weightSimilarT1) / weightSumT1;
