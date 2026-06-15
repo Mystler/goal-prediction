@@ -20,8 +20,8 @@
     <div class="text-2xl text-amber-400 font-bold sm:text-left">{data.match.team2}</div>
   </div>
 
-  <p>Ratings</p>
-  <div class="flex gap-6 justify-center">
+  <div>Ratings</div>
+  <div class="flex gap-6 justify-center text-slate-500">
     <div>{page.data.ratings[data.match.team1]}</div>
     <div>{page.data.ratings[data.match.team2]}</div>
   </div>
@@ -39,7 +39,7 @@
 
   {@render projectedGoals(data.match.team1ProjectedGoals, data.match.team2ProjectedGoals)}
 
-  <div>ELO Probability</div>
+  <div>ELO Weight</div>
   <div class="flex justify-center gap-6 text-slate-500 mb-4">
     <div>{Math.round(data.match.team1EloProb * 100)}%</div>
     <div>{Math.round(data.match.team2EloProb * 100)}%</div>

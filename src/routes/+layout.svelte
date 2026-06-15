@@ -32,7 +32,10 @@
 
 <h1 class="text-center mt-2">Goal Projection</h1>
 
-<p class="text-center"><a class="link-btn" href={resolve("/ratings")}>Show ELO Ratings</a></p>
+<p class="text-center">
+  <a class="link-btn" href={resolve("/about")}>About</a><br />
+  <a class="link-btn" href={resolve("/ratings")}>Show ELO Ratings</a>
+</p>
 
 <div class="flex flex-wrap gap-4 text-center justify-center">
   <div>
