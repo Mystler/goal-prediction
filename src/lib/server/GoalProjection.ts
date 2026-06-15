@@ -2,20 +2,37 @@ import * as fs from "fs";
 import { parse } from "csv-parse/sync";
 import { eloProb } from "./EloRatings";
 
+function cutoffDate() {
+  const cutoffDate = new Date();
+  cutoffDate.setFullYear(cutoffDate.getFullYear() - 8);
+  return cutoffDate;
+}
+
+function recencyWeight(date: Date, start: Date, end: Date) {
+  // Scale from 0.3 to 1.0 between start and end date
+  return Math.max(
+    0.3,
+    Math.min(1.0, ((date.getTime() - start.getTime()) / (end.getTime() - start.getTime())) * 0.7 + 0.3),
+  );
+}
+
 function avgGoals(games: ProcessedGame[], team: string): number[] {
   const goals = [0, 0];
-  if (games.length === 0) return goals;
+  if (games.length === 0) return [...goals, 0];
 
+  let weightSum = 0;
   for (const game of games) {
+    const weight = game.game_weight ?? 0.3;
+    weightSum += weight;
     if (game.home_team === team) {
-      goals[0] += game.home_score;
-      goals[1] += game.away_score;
+      goals[0] += game.home_score * weight;
+      goals[1] += game.away_score * weight;
     } else if (game.away_team === team) {
-      goals[1] += game.home_score;
-      goals[0] += game.away_score;
+      goals[1] += game.home_score * weight;
+      goals[0] += game.away_score * weight;
     }
   }
-  return goals.map((x) => x / games.length);
+  return [...goals.map((x) => x / weightSum), weightSum];
 }
 
 function parseResults(filePath: string): CsvRow[] {
@@ -73,12 +90,13 @@ export async function predictMatch(team1: string, team2: string) {
     return scoresValid && involvesTeam;
   });
 
+  const cutoff = cutoffDate();
+  const cutoffEnd = new Date();
+  cutoffEnd.setFullYear(cutoffEnd.getFullYear(), 1, 1);
   let data = toProcessedGames(filteredRows);
-
-  const cutoffDate = new Date();
-  cutoffDate.setFullYear(cutoffDate.getFullYear() - 8);
-  data = data.filter((x) => x.date >= cutoffDate);
+  data = data.filter((x) => x.date >= cutoff);
   data.sort((a, b) => a.date.getTime() - b.date.getTime());
+  data.forEach((x) => (x.game_weight = recencyWeight(x.date, cutoff, cutoffEnd)));
 
   // Head to Head games
   const h2hCount = 3;
@@ -126,15 +144,16 @@ export async function predictMatch(team1: string, team2: string) {
   const similarGoals2 = avgGoals(similar2, team2);
 
   // Combine
-  const weightH2h = 0.25 * h2h.length;
+  const weightH2h = 0.75 * h2hGoals[2];
   const weightRecent = 0.5;
-  const weightRecentT1 = weightRecent * recent1.length;
-  const weightRecentT2 = weightRecent * recent2.length;
+  const weightRecentT1 = weightRecent * recentGoals1[2];
+  const weightRecentT2 = weightRecent * recentGoals2[2];
   const weightSimilar = 1.0;
-  const weightSimilarT1 = weightSimilar * similar1.length;
-  const weightSimilarT2 = weightSimilar * similar2.length;
+  const weightSimilarT1 = weightSimilar * similarGoals1[2];
+  const weightSimilarT2 = weightSimilar * similarGoals2[2];
   const weightSumT1 = weightH2h + weightRecentT1 + weightSimilarT1;
   const weightSumT2 = weightH2h + weightRecentT2 + weightSimilarT2;
+  console.log(weightSumT1);
 
   const t1Scored =
     (h2hGoals[0] * weightH2h + recentGoals1[0] * weightRecentT1 + similarGoals1[0] * weightSimilarT1) / weightSumT1;

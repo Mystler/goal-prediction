@@ -9,4 +9,5 @@ interface ProcessedGame {
   home_score: number;
   away_score: number;
   tournament: string;
+  game_weight?: number;
 }
