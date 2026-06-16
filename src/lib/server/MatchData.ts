@@ -16,25 +16,6 @@ function recencyWeight(date: Date, start: Date, end: Date) {
   );
 }
 
-function avgGoals(games: ProcessedGame[], team: string): number[] {
-  const goals = [0, 0];
-  if (games.length === 0) return [...goals, 0];
-
-  let weightSum = 0;
-  for (const game of games) {
-    const weight = game.game_weight ?? 0.3;
-    weightSum += weight;
-    if (game.home_team === team) {
-      goals[0] += game.home_score * weight;
-      goals[1] += game.away_score * weight;
-    } else if (game.away_team === team) {
-      goals[1] += game.home_score * weight;
-      goals[0] += game.away_score * weight;
-    }
-  }
-  return [...goals.map((x) => x / weightSum), weightSum];
-}
-
 function parseResults(filePath: string): CsvRow[] {
   const content = fs.readFileSync(filePath, { encoding: "utf-8" });
   return parse(content, { columns: true, skip_empty_lines: true }) as CsvRow[];
@@ -51,7 +32,7 @@ function toProcessedGames(rows: CsvRow[]): ProcessedGame[] {
   }));
 }
 
-export async function predictMatch(team1: string, team2: string) {
+export async function predictionData(team1: string, team2: string) {
   const teamdataPath = "ratings.json";
   if (!fs.existsSync(teamdataPath)) {
     console.error(`Ratings file not found!`);
@@ -92,7 +73,7 @@ export async function predictMatch(team1: string, team2: string) {
 
   const cutoff = cutoffDate();
   const cutoffEnd = new Date();
-  cutoffEnd.setFullYear(cutoffEnd.getFullYear(), 1, 1);
+  // cutoffEnd.setFullYear(cutoffEnd.getFullYear(), 1, 1);
   let data = toProcessedGames(filteredRows);
   data = data.filter((x) => x.date >= cutoff);
   data.sort((a, b) => a.date.getTime() - b.date.getTime());
@@ -103,15 +84,12 @@ export async function predictMatch(team1: string, team2: string) {
   const h2h = data
     .filter((x) => [team1, team2].includes(x.home_team) && [team1, team2].includes(x.away_team))
     .slice(-h2hCount);
-  const h2hGoals = avgGoals(h2h, team1);
 
   // Recent Games
   const recentCount = 10;
   const recent1 = data.filter((x) => [x.home_team, x.away_team].includes(team1)).slice(-recentCount);
-  const recentGoals1 = avgGoals(recent1, team1);
 
   const recent2 = data.filter((x) => [x.home_team, x.away_team].includes(team2)).slice(-recentCount);
-  const recentGoals2 = avgGoals(recent2, team2);
 
   // Similar Opponents
   const similarOpponents = 10;
@@ -128,7 +106,6 @@ export async function predictMatch(team1: string, team2: string) {
         (x.away_team === team1 && t1EloPartners.includes(x.home_team)),
     )
     .slice(-similarCount);
-  const similarGoals1 = avgGoals(similar1, team1);
   const t2EloPartners = Object.entries(elos)
     .map(([k, v]) => ({ team: k, diff: Math.abs(t1Elo - v) }))
     .sort((a, b) => a.diff - b.diff)
@@ -141,63 +118,16 @@ export async function predictMatch(team1: string, team2: string) {
         (x.away_team === team2 && t2EloPartners.includes(x.home_team)),
     )
     .slice(-similarCount);
-  const similarGoals2 = avgGoals(similar2, team2);
-
-  // Combine
-  const weightH2h = 0.75 * h2hGoals[2];
-  const weightRecent = 0.5;
-  const weightRecentT1 = weightRecent * recentGoals1[2];
-  const weightRecentT2 = weightRecent * recentGoals2[2];
-  const weightSimilar = 1.0;
-  const weightSimilarT1 = weightSimilar * similarGoals1[2];
-  const weightSimilarT2 = weightSimilar * similarGoals2[2];
-  const weightSumT1 = weightH2h + weightRecentT1 + weightSimilarT1;
-  const weightSumT2 = weightH2h + weightRecentT2 + weightSimilarT2;
-
-  const t1Scored =
-    (h2hGoals[0] * weightH2h + recentGoals1[0] * weightRecentT1 + similarGoals1[0] * weightSimilarT1) / weightSumT1;
-  const t1Conceded =
-    (h2hGoals[1] * weightH2h + recentGoals1[1] * weightRecentT1 + similarGoals1[1] * weightSimilarT1) / weightSumT1;
-  const t2Scored =
-    (h2hGoals[1] * weightH2h + recentGoals2[0] * weightRecentT2 + similarGoals2[0] * weightSimilarT2) / weightSumT2;
-  const t2Conceded =
-    (h2hGoals[0] * weightH2h + recentGoals2[1] * weightRecentT2 + similarGoals2[1] * weightSimilarT2) / weightSumT2;
-
-  const t1Projected = isNaN(t1Scored)
-    ? t2Conceded
-    : isNaN(t2Conceded)
-      ? t1Scored
-      : t1Scored * t1Prob +
-        t2Conceded * t2Prob +
-        (Math.abs(t1Scored - t2Conceded) / ((t1Scored + t2Conceded) / 2.0)) * t1Prob * t2Prob * (t1Scored - t2Conceded);
-  const t2Projected = isNaN(t2Scored)
-    ? t1Conceded
-    : isNaN(t1Conceded)
-      ? t2Scored
-      : t2Scored * t2Prob +
-        t1Conceded * t1Prob +
-        (Math.abs(t2Scored - t1Conceded) / ((t2Scored + t1Conceded) / 2.0)) * t1Prob * t2Prob * (t2Scored - t1Conceded);
 
   return {
     team1,
     team2,
     head2headGames: h2h,
-    head2headAvgGoals: h2hGoals,
     recentGamesTeam1: recent1,
     recentGamesTeam2: recent2,
-    recentGamesAvgGoalsTeam1: recentGoals1,
-    recentGamesAvgGoalsTeam2: recentGoals2,
     similarGamesTeam1: similar1,
     similarGamesTeam2: similar2,
-    similarGamesAvgGoalsTeam1: similarGoals1,
-    similarGamesAvgGoalsTeam2: similarGoals2,
     team1EloProb: t1Prob,
     team2EloProb: t2Prob,
-    team1Scored: t1Scored,
-    team1Conceded: t1Conceded,
-    team2Scored: t2Scored,
-    team2Conceded: t2Conceded,
-    team1ProjectedGoals: t1Projected,
-    team2ProjectedGoals: t2Projected,
   };
 }

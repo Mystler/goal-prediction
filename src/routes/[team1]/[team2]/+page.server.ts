@@ -1,8 +1,8 @@
-import { predictMatch } from "$lib/server/GoalProjection";
+import { predictionData } from "$lib/server/MatchData";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params }) => {
   return {
-    match: await predictMatch(params.team1, params.team2),
+    match: await predictionData(params.team1, params.team2),
   };
 };
