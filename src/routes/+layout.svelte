@@ -12,8 +12,8 @@
     if (!team1 || !team2) return;
     goto(
       resolve("/[team1]/[team2]", {
-        team1: encodeURIComponent(team1.toLowerCase()),
-        team2: encodeURIComponent(team2.toLowerCase()),
+        team1: encodeURIComponent(team1.toLowerCase().trim()),
+        team2: encodeURIComponent(team2.toLowerCase().trim()),
       }),
     );
   }
