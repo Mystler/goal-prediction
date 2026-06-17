@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@fortawesome/free-solid-svg-icons": "^7.2.0",
     "@sveltejs/adapter-node": "^5.5.4",
     "@sveltejs/kit": "^2.65.1",
     "@sveltejs/vite-plugin-svelte": "^7.1.2",

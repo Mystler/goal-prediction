@@ -1,7 +1,10 @@
 <script lang="ts">
   import { page } from "$app/state";
+  import FaIcon from "$lib/FaIcon.svelte";
   import { predictMatch } from "$lib/GoalPrediction.js";
   import PoissonTable from "$lib/PoissonTable.svelte";
+  import { faLock, faLockOpen } from "@fortawesome/free-solid-svg-icons";
+  import { MediaQuery } from "svelte/reactivity";
 
   let { data } = $props();
 
@@ -28,6 +31,8 @@
   });
 
   let projections = $derived(predictMatch(match, weights));
+
+  const touchscreen = new MediaQuery("(pointer: coarse)", false);
 </script>
 
 <svelte:head>
@@ -92,7 +97,24 @@
         {#each games.toSorted((a, b) => b.date.getTime() - a.date.getTime()) as game (game.date + game.home_team + game.away_team)}
           {const isHome = !team || game.home_team === team}
           {const isAway = !team || game.away_team === team}
+          {let entryLocked = $derived(touchscreen.current)}
           <div class="max-w-md mx-auto even:bg-slate-800 p-1 py-2 relative">
+            {#if touchscreen.current}
+              <button
+                class="text-slate-600 hover:text-slate-500 absolute top-4 right-0"
+                onclick={() => (entryLocked = !entryLocked)}
+                title="Toggle Weight Slider Lock"
+              >
+                {#key entryLocked}
+                  <!-- MANUAL HACK to fix the view box of the bugged lock icons in the FA SVG package. -->
+                  <FaIcon
+                    icon={entryLocked ? faLock : faLockOpen}
+                    viewBox={entryLocked ? "0 -32 384 544" : "0 -32 576 544"}
+                    class="size-8"
+                  />
+                {/key}
+              </button>
+            {/if}
             <div class="text-xs text-slate-500">{game.date.toISOString().slice(0, 10)}<br />{game.tournament}</div>
             <div class="grid grid-cols-[1fr_30px_30px_1fr]">
               <div
@@ -122,6 +144,7 @@
               min="0"
               max="1"
               step="0.01"
+              disabled={entryLocked}
               bind:value={game.game_weight}
               title={game.game_weight?.toFixed(2).toString() ?? ""}
             />
@@ -140,7 +163,7 @@
       {@render gamesSection("Recent Games", match.team1, match.recentGamesTeam1, projections.recentGoals1)}
       {@render gamesSection("Similar Opponents", match.team1, match.similarGamesTeam1, projections.similarGoals1)}
       <h3>Team Total</h3>
-      <div class="grid grid-cols-[320px_50px] justify-center">
+      <div class="grid grid-cols-[250px_50px] justify-center">
         <div class="col-span-2">Head to Head</div>
         <div class="flex items-center">
           <input
@@ -188,7 +211,7 @@
       {@render gamesSection("Recent Games", match.team2, match.recentGamesTeam2, projections.recentGoals2)}
       {@render gamesSection("Similar Opponents", match.team2, match.similarGamesTeam2, projections.similarGoals2)}
       <h3>Team Total</h3>
-      <div class="grid grid-cols-[320px_50px] justify-center">
+      <div class="grid grid-cols-[250px_50px] justify-center">
         <div class="col-span-2">Head to Head</div>
         <div class="flex items-center">
           <input

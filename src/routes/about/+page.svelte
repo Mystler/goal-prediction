@@ -7,7 +7,7 @@
 
 <p>
   This tool is a basic custom prediction model for national team soccer games. It is written with Svelte, TypeScript,
-  and Tailwind CSS. The source code is available on <a
+  Tailwind CSS, and Font Awesome. The source code is available on <a
     href="https://github.com/Mystler/goal-prediction"
     target="_blank"
     rel="noopener">GitHub</a
