@@ -32,6 +32,7 @@
 
 <svelte:head>
   <title>{title}</title>
+  <meta name="description" content="Mystler's Goal Projection Tool" />
 </svelte:head>
 
 {#if !match || !projections}

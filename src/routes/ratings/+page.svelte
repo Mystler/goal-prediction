@@ -7,7 +7,10 @@
   let filtered = $derived(ratings.filter((x) => x[0].toLowerCase().includes(search.toLowerCase())));
 </script>
 
-<svelte:head><title>ELO Ratings</title></svelte:head>
+<svelte:head>
+  <title>ELO Ratings</title>
+  <meta name="description" content="Mystler's Goal Projection Tool" />
+</svelte:head>
 
 <h2>ELO Ratings</h2>
 

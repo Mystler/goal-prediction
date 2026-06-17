@@ -1,3 +1,8 @@
+<svelte:head>
+  <title>Goal Projection</title>
+  <meta name="description" content="Mystler's Goal Projection Tool" />
+</svelte:head>
+
 <h2>Mystler's Goal Projection Tool</h2>
 
 <p>
