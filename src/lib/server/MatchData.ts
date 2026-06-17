@@ -92,7 +92,7 @@ export async function predictionData(team1: string, team2: string) {
   const recent2 = data.filter((x) => [x.home_team, x.away_team].includes(team2)).slice(-recentCount);
 
   // Similar Opponents
-  const similarOpponents = 10;
+  const similarOpponents = 11; // includes self
   const similarCount = 7;
   const t1EloPartners = Object.entries(elos)
     .map(([k, v]) => ({ team: k, diff: Math.abs(t2Elo - v) }))
