@@ -29,6 +29,7 @@
   let minsLeft = $state(90);
   let liveScore = $state([0, 0]);
   let redCards = $state([0, 0]);
+  let extendedTime = $state(false);
 
   function factorial(n: number) {
     let res = 1;
@@ -43,14 +44,8 @@
   }
 
   let scoreMatrix = $derived.by(() => {
-    let mat = [
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-    ];
+    let mat = Array.from({ length: 6 }, () => Array(6).fill(0));
+    const xgt1 = (Math.max(0, xg1 - redCards[0] * 0.55 + redCards[1] * 0.55) / 90) * minsLeft;
     let t1Probs = Array(6).fill(0) as number[];
     for (let t1 = 0; t1 <= 5; t1++) {
       if (t1 < liveScore[0]) {
@@ -58,12 +53,10 @@
       } else if (t1 === 5) {
         t1Probs[t1] = 1 - t1Probs[0] - t1Probs[1] - t1Probs[2] - t1Probs[3] - t1Probs[4];
       } else {
-        t1Probs[t1] = poisson(
-          (Math.max(0, xg1 - redCards[0] * 0.55 + redCards[1] * 0.55) / 90) * minsLeft,
-          t1 - liveScore[0],
-        );
+        t1Probs[t1] = poisson(xgt1, t1 - liveScore[0]);
       }
     }
+    const xgt2 = (Math.max(0, xg2 - redCards[1] * 0.55 + redCards[0] * 0.55) / 90) * minsLeft;
     let t2Probs = Array(6).fill(0) as number[];
     for (let t2 = 0; t2 <= 5; t2++) {
       if (t2 < liveScore[1]) {
@@ -71,16 +64,53 @@
       } else if (t2 === 5) {
         t2Probs[t2] = 1 - t2Probs[0] - t2Probs[1] - t2Probs[2] - t2Probs[3] - t2Probs[4];
       } else {
-        t2Probs[t2] = poisson(
-          (Math.max(0, xg2 - redCards[1] * 0.55 + redCards[0] * 0.55) / 90) * minsLeft,
-          t2 - liveScore[1],
-        );
+        t2Probs[t2] = poisson(xgt2, t2 - liveScore[1]);
       }
     }
     for (let t1 = 0; t1 <= 5; t1++) {
       for (let t2 = 0; t2 <= 5; t2++) {
         mat[t1][t2] = t1Probs[t1] * t2Probs[t2];
       }
+    }
+    // EXTENDED TIME AREA
+    if (extendedTime) {
+      let et = Array.from({ length: 6 }, () => Array(6).fill(0));
+      const xget1 = (Math.max(0, xg1 - redCards[0] * 0.55 + redCards[1] * 0.55) / 90) * 30;
+      let et1Probs = Array(6).fill(0) as number[];
+      for (let t1 = 0; t1 <= 5; t1++) {
+        if (t1 < liveScore[0]) {
+          et1Probs[t1] = 0;
+        } else if (t1 === 5) {
+          et1Probs[t1] = 1 - et1Probs[0] - et1Probs[1] - et1Probs[2] - et1Probs[3] - et1Probs[4];
+        } else {
+          et1Probs[t1] = poisson(xget1, t1 - liveScore[0]);
+        }
+      }
+      const xget2 = (Math.max(0, xg2 - redCards[1] * 0.55 + redCards[0] * 0.55) / 90) * 30;
+      let et2Probs = Array(6).fill(0) as number[];
+      for (let t2 = 0; t2 <= 5; t2++) {
+        if (t2 < liveScore[1]) {
+          et2Probs[t2] = 0;
+        } else if (t2 === 5) {
+          et2Probs[t2] = 1 - et2Probs[0] - et2Probs[1] - et2Probs[2] - et2Probs[3] - et2Probs[4];
+        } else {
+          et2Probs[t2] = poisson(xget2, t2 - liveScore[1]);
+        }
+      }
+      for (let t1 = 0; t1 <= 5; t1++) {
+        for (let t2 = 0; t2 <= 5; t2++) {
+          et[t1][t2] = et1Probs[t1] * et2Probs[t2];
+        }
+      }
+      mat = Array.from({ length: 6 }, (_, t1) =>
+        Array.from({ length: 6 }, (_, t2) => {
+          let chance = t1 === t2 ? 0 : mat[t1][t2];
+          for (let i = Math.min(t1, t2); i >= 0; i--) {
+            chance += mat[i][i] * et[t1 - i][t2 - i];
+          }
+          return chance;
+        }),
+      );
     }
     return mat;
   });
@@ -95,14 +125,7 @@
     return res.reduce((sum, x) => sum + x, 0);
   }
   let xpMatrix = $derived.by(() => {
-    let mat = [
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-    ];
+    let mat = Array.from({ length: 6 }, () => Array(6).fill(0));
     for (let t1 = 0; t1 <= 5; t1++) {
       for (let t2 = 0; t2 <= 5; t2++) {
         if (t1 === t2) {
@@ -131,14 +154,7 @@
       min = n < min ? n : min;
       max = n > max ? n : max;
     }
-    let mat = [
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0],
-    ];
+    let mat = Array.from({ length: 6 }, () => Array(6).fill(0));
     for (let t1 = 0; t1 <= 5; t1++) {
       for (let t2 = 0; t2 <= 5; t2++) {
         mat[t1][t2] = ((displayMatrix[t1][t2] - min) / (max - min)) * 120;
@@ -258,6 +274,12 @@
     <div>
       <input class="p-1 w-10 border-0 rounded-none" type="number" min="0" bind:value={redCards[0]} />
       <input class="p-1 w-10 border-0 rounded-none" type="number" min="0" bind:value={redCards[1]} />
+    </div>
+  </div>
+  <div class="flex flex-col items-start">
+    <div>Add Extended Time:</div>
+    <div>
+      <input class="mt-1" type="checkbox" bind:checked={extendedTime} />
     </div>
   </div>
 </div>
