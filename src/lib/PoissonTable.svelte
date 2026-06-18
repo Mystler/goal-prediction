@@ -148,16 +148,9 @@
   });
 
   let { t1Chance, t2Chance, drawChance } = $derived.by(() => {
-    let t1Chance = 0,
-      t2Chance = 0,
-      drawChance = 0;
-    for (let t1 = 0; t1 <= 5; t1++) {
-      for (let t2 = 0; t2 <= 5; t2++) {
-        if (t1 > t2) t1Chance += scoreMatrix[t1][t2];
-        else if (t2 > t1) t2Chance += scoreMatrix[t1][t2];
-        else drawChance += scoreMatrix[t1][t2];
-      }
-    }
+    const t1Chance = sumProbs((t1, t2) => t1 > t2),
+      t2Chance = sumProbs((t1, t2) => t2 > t1),
+      drawChance = sumProbs((t1, t2) => t1 === t2);
     return { t1Chance, t2Chance, drawChance };
   });
 </script>
