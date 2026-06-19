@@ -1,6 +1,13 @@
 {
   "short_name": "Goal Projection",
   "name": "Mystler's Goal Projection Tool",
+  "icons": [
+    {
+      "src": "/xg/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg"
+    }
+  ],
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#0f172b",
