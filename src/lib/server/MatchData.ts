@@ -80,7 +80,7 @@ export async function predictionData(team1: string, team2: string) {
   data.forEach((x) => (x.game_weight = recencyWeight(x.date, cutoff, cutoffEnd)));
 
   // Head to Head games
-  const h2hCount = 3;
+  const h2hCount = 5;
   const h2h = data
     .filter((x) => [team1, team2].includes(x.home_team) && [team1, team2].includes(x.away_team))
     .slice(-h2hCount);
@@ -93,7 +93,7 @@ export async function predictionData(team1: string, team2: string) {
 
   // Similar Opponents
   const similarOpponents = 11; // includes self
-  const similarCount = 7;
+  const similarCount = 10;
   const t1EloPartners = Object.entries(elos)
     .map(([k, v]) => ({ team: k, diff: Math.abs(t2Elo - v) }))
     .sort((a, b) => a.diff - b.diff)
