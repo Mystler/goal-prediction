@@ -6,6 +6,7 @@ import * as fs from "fs";
 const ELOKFactor = 30.0;
 const ELOScaleFactor = 400.0;
 const ELOExponentBase = 10.0;
+const ELOStartRating = 1500;
 
 export function eloProb(ratingDiff: number): number {
   return 1.0 / (1.0 + ELOExponentBase ** (ratingDiff / ELOScaleFactor));
@@ -16,26 +17,31 @@ export function eloNextRating(rating: number, actual: number, expected: number, 
 }
 
 function tournamentWeight(t: string): number {
-  let weight = 2.0 / 3.0;
-  if (t.includes("FIFA World ")) {
-    weight = 4.0 / 3.0;
-  } else if (t.includes("UEFA ")) {
-    weight = 4.0 / 3.0;
+  if (t === "Friendly") return 2.0 / 3.0;
+  let weight = 1;
+  if (t.includes("FIFA World Cup")) {
+    weight = 6.0 / 3.0;
+    if (t.includes("qualification")) {
+      weight = 4.0 / 3.0;
+    }
   } else if (
     [
-      "AFC ",
-      "CAF ",
-      "CONCACAF ",
-      "CONMEBOL ",
-      "OFC ",
+      "UEFA Euro",
+      "UEFA Nations League",
+      "AFC Asian Cup",
+      "CONCACAF Championship",
+      "CONCACAF Gold Cup",
+      "CONCACAF Nations League",
+      "Oceania Nations Cup",
       "Confederations Cup",
       "Copa América",
       "African Cup of Nations",
-      "Africa Cup of Nations",
-      "African Nations",
     ].some((x) => t.includes(x))
   ) {
-    weight = 4.0 / 3.0;
+    weight = 5.0 / 3.0;
+    if (t.includes("qualification")) {
+      weight = 4.0 / 3.0;
+    }
   }
   return weight;
 }
@@ -64,8 +70,8 @@ export async function calculateEloRatings() {
 
   const teamElo: Record<string, number> = {};
   for (const game of records) {
-    const homeElo = teamElo[game.home_team] ?? 1500;
-    const awayElo = teamElo[game.away_team] ?? 1500;
+    const homeElo = teamElo[game.home_team] ?? ELOStartRating;
+    const awayElo = teamElo[game.away_team] ?? ELOStartRating;
     const diff = awayElo - homeElo;
 
     const homeScore = game.home_score > game.away_score ? 1.0 : game.home_score < game.away_score ? 0.0 : 0.5;
