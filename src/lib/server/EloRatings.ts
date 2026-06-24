@@ -1,5 +1,6 @@
 import { parse } from "csv-parse/sync";
 import * as fs from "fs";
+import { cutoffDate } from "./MatchData";
 
 // Expected data source: https://github.com/martj42/international_results
 
@@ -69,6 +70,7 @@ export async function calculateEloRatings() {
     .sort((a, b) => a.date.getTime() - b.date.getTime());
 
   const teamElo: Record<string, number> = {};
+  const teamLatestGame: Record<string, Date> = {};
   for (const game of records) {
     const homeElo = teamElo[game.home_team] ?? ELOStartRating;
     const awayElo = teamElo[game.away_team] ?? ELOStartRating;
@@ -87,6 +89,16 @@ export async function calculateEloRatings() {
 
     teamElo[game.home_team] = eloNextRating(homeElo, homeScore, eloProb(diff), gameWeight);
     teamElo[game.away_team] = eloNextRating(awayElo, awayScore, eloProb(-diff), gameWeight);
+    teamLatestGame[game.home_team] = game.date;
+    teamLatestGame[game.away_team] = game.date;
+  }
+
+  // Remove teams with no recent games from stored output
+  const cutoff = cutoffDate();
+  for (const [team, date] of Object.entries(teamLatestGame)) {
+    if (date < cutoff) {
+      delete teamElo[team];
+    }
   }
 
   fs.writeFileSync("ratings.json", JSON.stringify(teamElo));

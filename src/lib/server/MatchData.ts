@@ -2,7 +2,7 @@ import * as fs from "fs";
 import { parse } from "csv-parse/sync";
 import { eloProb } from "./EloRatings";
 
-function cutoffDate() {
+export function cutoffDate() {
   const cutoffDate = new Date();
   cutoffDate.setFullYear(cutoffDate.getFullYear() - 8);
   return cutoffDate;
