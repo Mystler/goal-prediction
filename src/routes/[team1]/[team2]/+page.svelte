@@ -43,14 +43,14 @@
 {#if !match || !projections}
   <p>No data for the specified teams!</p>
 {:else}
-  <div class="sm:grid grid-cols-[1fr_50px_1fr] gap-6 justify-center mb-2">
-    <div class="text-2xl text-amber-400 font-bold sm:text-right">{match.team1}</div>
+  <div class="mb-2 grid-cols-[1fr_50px_1fr] justify-center gap-6 sm:grid">
+    <div class="text-2xl font-bold text-amber-400 sm:text-right">{match.team1}</div>
     <div class="text-xl">vs</div>
-    <div class="text-2xl text-amber-400 font-bold sm:text-left">{match.team2}</div>
+    <div class="text-2xl font-bold text-amber-400 sm:text-left">{match.team2}</div>
   </div>
 
   <div>Ratings</div>
-  <div class="flex gap-6 justify-center text-slate-500">
+  <div class="flex justify-center gap-6 text-slate-500">
     <div>{page.data.ratings[match.team1]}</div>
     <div>{page.data.ratings[match.team2]}</div>
   </div>
@@ -73,7 +73,7 @@
     <div>{Math.round(weights.t1Impact * 100)}%</div>
     <div>{Math.round(weights.t2Impact * 100)}%</div>
   </div>
-  <div class="max-w-xs mx-auto mb-4">
+  <div class="mx-auto mb-4 max-w-xs">
     <input
       type="range"
       class="slider"
@@ -98,10 +98,10 @@
           {const isHome = !team || game.home_team === team}
           {const isAway = !team || game.away_team === team}
           {let entryLocked = $derived(touchscreen.current)}
-          <div class="max-w-md mx-auto even:bg-slate-800 p-1 py-2 relative">
+          <div class="relative mx-auto max-w-md p-1 py-2 even:bg-slate-800">
             {#if touchscreen.current}
               <button
-                class="text-slate-600 hover:text-slate-500 absolute top-4 right-0"
+                class="absolute top-4 right-0 text-slate-600 hover:text-slate-500"
                 onclick={() => (entryLocked = !entryLocked)}
                 title="Toggle Weight Slider Lock"
               >
@@ -157,7 +157,7 @@
 
   {@render gamesSection("Head to Head", undefined, match.head2headGames, projections.h2hGoals)}
 
-  <div class="sm:grid grid-cols-2 gap-2 mb-4 justify-center">
+  <div class="mb-4 grid-cols-2 justify-center gap-2 sm:grid">
     <div>
       <h2 class="text-amber-400">{match.team1}</h2>
       {@render gamesSection("Recent Games", match.team1, match.recentGamesTeam1, projections.recentGoals1)}

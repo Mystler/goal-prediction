@@ -30,14 +30,14 @@
   })}
 </p>
 
-<h1 class="text-center mt-2">Goal Projection</h1>
+<h1 class="mt-2 text-center">Goal Projection</h1>
 
 <p class="text-center">
   <a class="link-btn" href={resolve("/about")}>About</a><br />
   <a class="link-btn" href={resolve("/ratings")}>Show ELO Ratings</a>
 </p>
 
-<div class="flex flex-wrap gap-4 text-center justify-center">
+<div class="flex flex-wrap justify-center gap-4 text-center">
   <div>
     <label>
       Team 1:<br />
@@ -83,6 +83,6 @@
 
 <hr />
 
-<div class="max-w-(--breakpoint-xl) mx-auto text-center">
+<div class="mx-auto max-w-(--breakpoint-xl) text-center">
   {@render children()}
 </div>

@@ -172,7 +172,7 @@
 </script>
 
 <div class="mb-2 overflow-x-auto">
-  <div class="grid grid-cols-8 min-w-xs max-w-(--breakpoint-lg) mx-auto text-[8px] sm:text-xs md:text-base">
+  <div class="mx-auto grid max-w-(--breakpoint-lg) min-w-xs grid-cols-8 text-[8px] sm:text-xs md:text-base">
     <button
       class={[tableMode === "chances" ? "bg-slate-700" : "bg-slate-800", "hover:bg-slate-600"]}
       onclick={() => (tableMode = "chances")}>Chances</button
@@ -181,19 +181,19 @@
       class={[tableMode === "xp" ? "bg-slate-700" : "bg-slate-800", "hover:bg-slate-600"]}
       onclick={() => (tableMode = "xp")}>XP</button
     >
-    <div class="col-span-6 flex gap-x-2 px-2 justify-between">
+    <div class="col-span-6 flex justify-between gap-x-2 px-2">
       <div class="flex flex-col">
         <div>Proj Goals:</div>
-        <div class="flex flex-wrap gap-x-2 items-center justify-center">
+        <div class="flex flex-wrap items-center justify-center gap-x-2">
           <input
-            class="p-1 w-10 sm:w-12 md:w-14 border-0 rounded-none"
+            class="w-10 rounded-none border-0 p-1 sm:w-12 md:w-14"
             type="number"
             step="0.01"
             value={xg1.toFixed(2)}
             onchange={(e) => (xg1 = parseFloat(e.currentTarget.value))}
           />
           <input
-            class="p-1 w-10 sm:w-12 md:w-14 border-0 rounded-none"
+            class="w-10 rounded-none border-0 p-1 sm:w-12 md:w-14"
             type="number"
             step="0.01"
             value={xg2.toFixed(2)}
@@ -203,22 +203,22 @@
       </div>
       <div class="flex flex-col">
         <div>Prediction Points:</div>
-        <div class="flex flex-wrap gap-x-2 items-center justify-center">
+        <div class="flex flex-wrap items-center justify-center gap-x-2">
           <div>
             <span>Trend:</span>
-            <input class="p-1 w-8 border-0 rounded-none" type="number" bind:value={xpConfig.trend} />
+            <input class="w-8 rounded-none border-0 p-1" type="number" bind:value={xpConfig.trend} />
           </div>
           <div>
             <span>Diff:</span>
-            <input class="p-1 w-8 border-0 rounded-none" type="number" bind:value={xpConfig.diff} />
+            <input class="w-8 rounded-none border-0 p-1" type="number" bind:value={xpConfig.diff} />
           </div>
           <div>
             <span>Exact:</span>
-            <input class="p-1 w-8 border-0 rounded-none" type="number" bind:value={xpConfig.exact} />
+            <input class="w-8 rounded-none border-0 p-1" type="number" bind:value={xpConfig.exact} />
           </div>
           <div>
             <span>Tie:</span>
-            <input class="p-1 w-8 border-0 rounded-none" type="number" bind:value={xpConfig.tie} />
+            <input class="w-8 rounded-none border-0 p-1" type="number" bind:value={xpConfig.tie} />
           </div>
         </div>
       </div>
@@ -257,23 +257,23 @@
     {/each}
   </div>
 </div>
-<div class="flex gap-4 mx-auto max-w-(--breakpoint-lg) text-[8px] mb-4">
+<div class="mx-auto mb-4 flex max-w-(--breakpoint-lg) gap-4 text-[8px]">
   <div class="flex flex-col items-start">
     <div>Minutes Left:</div>
-    <div><input class="p-1 w-10 border-0 rounded-none" type="number" min="0" bind:value={minsLeft} /></div>
+    <div><input class="w-10 rounded-none border-0 p-1" type="number" min="0" bind:value={minsLeft} /></div>
   </div>
   <div class="flex flex-col items-start">
     <div>Live Score:</div>
     <div>
-      <input class="p-1 w-10 border-0 rounded-none" type="number" min="0" bind:value={liveScore[0]} />
-      <input class="p-1 w-10 border-0 rounded-none" type="number" min="0" bind:value={liveScore[1]} />
+      <input class="w-10 rounded-none border-0 p-1" type="number" min="0" bind:value={liveScore[0]} />
+      <input class="w-10 rounded-none border-0 p-1" type="number" min="0" bind:value={liveScore[1]} />
     </div>
   </div>
   <div class="flex flex-col items-start">
     <div>Red Cards:</div>
     <div>
-      <input class="p-1 w-10 border-0 rounded-none" type="number" min="0" bind:value={redCards[0]} />
-      <input class="p-1 w-10 border-0 rounded-none" type="number" min="0" bind:value={redCards[1]} />
+      <input class="w-10 rounded-none border-0 p-1" type="number" min="0" bind:value={redCards[0]} />
+      <input class="w-10 rounded-none border-0 p-1" type="number" min="0" bind:value={redCards[1]} />
     </div>
   </div>
   <div class="flex flex-col items-start">
