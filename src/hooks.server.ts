@@ -1,6 +1,6 @@
-import { building } from "$app/environment";
-import { updateDB } from "$lib/server/GameDB";
-import type { ServerInit } from "@sveltejs/kit";
+import type { ServerInit } from "@sveltejs/kit/hooks";
+import { building } from "$app/env";
+import { updateDB } from "#lib/server/GameDB.js";
 
 export const init: ServerInit = async () => {
   process.on("SIGINT", () => {

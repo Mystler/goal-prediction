@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
 import type { LayoutServerLoad } from "./$types";
-import { getLastDBUpdateDate } from "$lib/server/GameDB";
+import { getLastDBUpdateDate } from "#lib/server/GameDB.js";
 
 export const load: LayoutServerLoad = async () => {
   return {

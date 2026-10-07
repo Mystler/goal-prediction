@@ -33,8 +33,9 @@
 <h1 class="mt-2 text-center">Goal Projection</h1>
 
 <p class="text-center">
-  <a class="link-btn" href={resolve("/about")}>About</a><br />
-  <a class="link-btn" href={resolve("/ratings")}>Show ELO Ratings</a>
+  <a class="link-btn" href={resolve("about")}>About</a>
+  <br />
+  <a class="link-btn" href={resolve("ratings")}>Show ELO Ratings</a>
 </p>
 
 <div class="flex flex-wrap justify-center gap-4 text-center">

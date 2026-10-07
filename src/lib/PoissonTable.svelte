@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { browser } from "$app/environment";
+  import { browser } from "$app/env";
 
   interface Props {
     xg1: number;
@@ -7,8 +7,8 @@
     team1: string;
     team2: string;
   }
-  let { xg1, xg2, team1, team2 }: Props = $props();
 
+  let { xg1, xg2, team1, team2 }: Props = $props();
   let tableMode: "chances" | "xp" = $state("chances");
   let xpConfig = $state({
     trend: 2,
@@ -177,10 +177,12 @@
       class={[tableMode === "chances" ? "bg-slate-700" : "bg-slate-800", "hover:bg-slate-600"]}
       onclick={() => (tableMode = "chances")}>Chances</button
     >
+
     <button
       class={[tableMode === "xp" ? "bg-slate-700" : "bg-slate-800", "hover:bg-slate-600"]}
       onclick={() => (tableMode = "xp")}>XP</button
     >
+
     <div class="col-span-6 flex justify-between gap-x-2 px-2">
       <div class="flex flex-col">
         <div>Proj Goals:</div>

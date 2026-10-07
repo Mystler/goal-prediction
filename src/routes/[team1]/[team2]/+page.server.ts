@@ -1,4 +1,4 @@
-import { predictionData } from "$lib/server/MatchData";
+import { predictionData } from "#lib/server/MatchData.js";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params }) => {

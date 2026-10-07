@@ -1,8 +1,8 @@
 <script lang="ts">
   import { page } from "$app/state";
-  import FaIcon from "$lib/FaIcon.svelte";
-  import { predictMatch } from "$lib/GoalPrediction.js";
-  import PoissonTable from "$lib/PoissonTable.svelte";
+  import FaIcon from "#lib/FaIcon.svelte";
+  import { predictMatch } from "#lib/GoalPrediction.js";
+  import PoissonTable from "#lib/PoissonTable.svelte";
   import { faLock, faLockOpen } from "@fortawesome/free-solid-svg-icons";
   import { MediaQuery } from "svelte/reactivity";
 
